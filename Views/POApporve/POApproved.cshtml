@@ -1,0 +1,167 @@
+﻿@model PoHeader
+
+@{
+    ViewData["Title"] = "PO Approval";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using Microsoft.AspNetCore.Http;
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css">
+
+
+<div class="container-fluid btn-group">
+    <div class="col-10">
+        <h3>@ViewData["Title"]</h3>
+    </div>
+</div>
+
+<br />
+
+<form id="frmGrid" method="post"  name="frmGrid">
+    <section class="content">
+        <div class="content-header">
+            <input type="hidden" asp-for="Id" />
+<div id="mydivMain" style="padding:25px;">
+    <div class="row">
+<table id="tblGrid" class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th style="text-align:center">PoNumber</th>
+            <th style="text-align:center">PoDate</th>
+            <th style="text-align:right">SupplierId</th>
+            <th style="text-align:center">QuotationNo</th>
+            <th style="text-align:center">QuotationDate</th>
+            <th style="text-align:center">Amount</th>
+            <th style="text-align:center">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+       @foreach (var item in Model.POListApprove)
+        {
+            <tr>
+                <td style="text-align:right">@item.PoNumber</td>
+                <td style="text-align:right">@item.PoDate.ToString("dd/MMM/yyyy")</td>
+                <td>@item.SupplierId</td>
+                <td>@item.QuotationNo</td>
+                <td>@item.QuotationDate.ToString("dd/MMM/yyyy")</td>
+                <td>@item.poamt</td>
+                <td>
+                    <div>
+                        <input type="checkbox" id="checkboxId" name="checkboxID">
+                    </div>
+                </td>
+
+             </tr>
+        }
+    </tbody>
+</table>
+    </div>
+</div>
+<div class="row">
+    <div class="col-2">
+        <button type="submit" id="save-btn" asp-action="SavePOApproved" asp-controller="POApporve" class="btn bg-gradient-success btn-flat">PO Approve</button>
+    </div>
+    <div class="col-1">
+        <label for="lblrefno">PO No</label>
+    </div>
+    <div class="col-5">
+        <input type="text" id="txtDocumentNumber" required asp-for="PoNumber" readonly="readonly" class="form-control" />
+    </div>
+    <div class="col-1">
+        <label for="amttotal">Total Amt</label>
+    </div>
+    <div class="col-1">
+        <input type="text" id="txtTotalAmt" required asp-for="poamt" readonly="readonly" class="form-control" />
+    </div>
+     <div class="col-2">
+        <button type="submit" id="cancel-btn" asp-action="CancelPOApproved" asp-controller="POApporve" class="btn bg-danger btn-flat">PO Cancel</button>
+    </div>
+</div>
+
+        </div>
+    </section>
+</form>
+
+
+@section Scripts {
+
+    <script src="~/js2/jquery-3.5.1.js"></script>
+    <script src="~/js2/jquery.dataTables.min.js"></script>
+    <script src="~/js2/dataTables.bootstrap4.min.js"></script>
+    <script src="~/js2/dataTables.buttons.min.js"></script>
+    <script src="~/js2/buttons.bootstrap4.min.js"></script>
+    <script src="~/js2/zip_3.1.3_jszip.min.js"></script>
+    <script src="~/js2/pdfmake.min.js"></script>
+    <script src="~/js2/vfs_fonts.js"></script>
+    <script src="~/js2/buttons.html5.min.js"></script>
+    <script src="~/js2/buttons.print.min.js"></script>
+    <script src="~/js2/buttons.colVis.min.js"></script>
+
+    <script src="~/js/Chart.min.js"></script>
+    <script src="~/js/dashboard.js"></script>
+
+
+    <script>
+        var grid;
+        $(function () {
+            grid = $('#tblGrid').DataTable({
+                dom: 'Bfrtip',
+                //scrollY: '400px',
+                //scrollCollapse: true,
+                paging: false,
+                buttons: ["excel", "pdf", "print"]
+            });
+        });
+    </script>
+  
+    <script type="text/javascript">
+        $(function () {
+            $('input:checkbox').click(function (e) {
+                calculatesubtotalsum(6); // sum of subtotal column
+            });
+            function calculatesubtotalsum(colidx) {
+                subtotalsum = 0.0;
+                $("tr:has(:checkbox:checked) td:nth-child(" + colidx + ")").each(function () {
+                    subtotalsum += parseFloat($(this).text());
+                });
+                document.getElementById('txtTotalAmt').value = subtotalsum.toFixed(2);
+            }
+        });
+    </script>
+
+    <script type="text/javascript">
+
+        $(function () {
+            $('input:checkbox').click(function (e) {
+                calculatesubtotalsum(1); // sum of subtotal column
+            });
+            function calculatesubtotalsum(colidx) {
+                var subtotalsum = "";
+
+                $("tr:has(:checkbox:checked) td:nth-child(" + colidx + ")").each(function () {
+                    subtotalsum = $(this).text() + "," + subtotalsum;
+                });
+                document.getElementById('txtDocumentNumber').value = subtotalsum;
+
+            }
+
+        });
+    </script>
+
+    <script>
+        let toggle = button => {
+            let element = document.getElementById("mydivMain");
+            let hidden = element.getAttribute("hidden");
+
+            if (hidden) {
+                element.removeAttribute("hidden");
+                button.innerText = "Hide div";
+            } else {
+                element.setAttribute("hidden", "hidden");
+                button.innerText = "Show div";
+            }
+        }
+    </script>
+
+ 
+}

@@ -1,0 +1,104 @@
+﻿@model PoHeader
+
+@{
+    ViewData["Title"] = "PO List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-8">
+                <h1 class="m-0">Purchase Order Report</h1>
+            </div>
+            </div>
+    </div>
+</div>
+    
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class=" col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" asp-controller="POList" asp-action="POList">PO List</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" asp-controller="Brand" asp-action="Index" tabindex="-1">Brands</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" asp-controller="Customer" asp-action="AddUpdateCustomer" tabindex="-2">Customer</a>
+                            </li>
+                        </ul>
+                        <form id="frmGrid" name="frmGrid" asp-antiforgery="true"></form>
+                        <table id="tblGrid" class="table table-bordered table-striped text-sm">
+                            <thead>
+                                <tr>
+                                    <th style="text-align:center">PoNumber</th>
+                                    <th style="text-align:center">PoDate</th>
+                                    <th style="text-align:right">SupplierId</th>
+                                    <th style="text-align:center">QuotationNo</th>
+                                    <th style="text-align:center">QuotationDate</th>
+                                    <th style="text-align:center">Amount</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.POListApprove)
+                                {
+                                    <tr>
+                                        <td style="text-align:right">@item.PoNumber</td>
+                                        <td style="text-align:right">@item.PoDate.ToString("dd/MMM/yyyy")</td>
+                                        <td>@item.SupplierId</td>
+                                        <td>@item.QuotationNo</td>
+                                        <td>@item.QuotationDate.ToString("dd/MMM/yyyy")</td>
+                                        <td>@item.poamt</td>
+
+
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+ 
+    </div>
+</section>
+
+
+
+@section Scripts {
+    <script src="~/js2/jquery-3.5.1.js"></script>
+    <script src="~/js2/jquery.dataTables.min.js"></script>
+    <script src="~/js2/dataTables.bootstrap4.min.js"></script>
+    <script src="~/js2/dataTables.buttons.min.js"></script>
+    <script src="~/js2/buttons.bootstrap4.min.js"></script>
+    <script src="~/js2/zip_3.1.3_jszip.min.js"></script>
+    <script src="~/js2/pdfmake.min.js"></script>
+    <script src="~/js2/vfs_fonts.js"></script>
+    <script src="~/js2/buttons.html5.min.js"></script>
+  <script src="~/js2/buttons.print.min.js"></script>
+   @* <script src="~/js2/buttons.colVis.min.js"></script>
+    <script src="~/js/Chart.min.js"></script>
+    <script src="~/js/dashboard.js"></script>*@
+
+    <script>
+        var grid;
+        $(function () {
+            grid = $('#tblGrid').DataTable({
+                dom: 'Bfrtip',
+                scrollY: '400px',
+                scrollCollapse: true,
+                paging: false,
+                buttons: ["copy", "csv", "excel", "pdf", "print"]
+            });
+        });
+    </script>
+
+     
+}
